@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.webgl {
+  top: 0;
+  clear: both;
+}
+
+.scenecontainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.choosebackgroundcolor {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}

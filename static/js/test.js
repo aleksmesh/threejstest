@@ -71,7 +71,6 @@ var mouseMove = function(e)
   yrotation += Math.PI*0.001*(e.clientY - startdy);
   mesh.rotation.y = xrotation;
   mesh.rotation.x = yrotation;
-  console.log( xrotation, yrotation, e.clientX, startdx, e.clientY, startdy );
   startdx = e.clientX;
   startdy = e.clientY;
 };

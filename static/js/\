@@ -1,5 +1,5 @@
 var camera, scene, renderer,
-material;
+geometry, material;
 var meshes = [];
 
 
@@ -24,18 +24,16 @@ var init = function() {
     map: loader.load('static/img/mercator-strange.jpg'),
   });
 
-  var size = 8;
-  for ( var i = 0; i < size*2; ++i ) {
-    for ( var j = 0; j < size*2; ++j ) {
-      console.log('okpok =', i, j);
-      var geometry = new THREE.SphereBufferGeometry( radius, 8, 8, i*Math.PI/size, Math.PI/size, j*Math.PI/size/2, Math.PI/size/2 );
+  for ( var i = 0; i < 12; ++i ) {
+    for ( var j = 0; j < 12; ++j ) {
+      geometry = new THREE.SphereGeometry( radius, 200, 200, i*Math.PI/12.0, Math.PI/12.0, j*Math.PI/12.0, Math.PI/12.0 );
 //      material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: false } );
  
 
 
       var mesh = new THREE.Mesh( geometry, material );
       meshes.push(mesh);
-      scene.add(mesh);
+      scene.add( mesh );
     }
   }
 

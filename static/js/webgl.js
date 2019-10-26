@@ -27,16 +27,18 @@ var baseactions = {
       }
     },
     setBackgroundColor: function(value) {
-    console.log(value);
-    console.log(this.backgroundcolor);
+      console.log(value);
+      console.log(this.backgroundcolor);
     }
   },
   watch: {
     backgroundcolor: function() {
+      console.log('nu hz shtoto');
       setBackgroundColor( this.gl, this.backgroundcolor );
     },
     primitivecolor: function() {
-      drawTestFigure( this.gl );
+      console.log('piska!', this.primitivecolor);
+      drawTestFigure( this.gl, hexToGlColor(this.primitivecolor) );
     }
   },
   template: `

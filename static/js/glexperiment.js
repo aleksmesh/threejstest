@@ -40,11 +40,11 @@ var drawTestFigure = function(gl, figurecolor )
   var vertextxt = `
     attribute vec4 a_color;
     varying vec4 v_color;
-    v_color = a_color;
 
     void main() {
       gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 );
       gl_PointSize = 10.0;
+      v_color = a_color;
     }`;
   var fragmenttxt = `
 //    precision medium float;
@@ -52,6 +52,7 @@ var drawTestFigure = function(gl, figurecolor )
 
     void main() {
       gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+//      gl_FragColor = v_color;
     }`;
   var vertex = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource( vertex, vertextxt );
@@ -66,5 +67,9 @@ var drawTestFigure = function(gl, figurecolor )
 //  }
   gl.drawArrays( gl.POINTS, 0, 1 );
   var clr = gl.getAttribLocation( program, 'a_color' );
+  gl.enableVertexAttribArray(clr);
+//  var clr2 = gl.getAttribLocation( program, 'v_color' );
+//  gl.enableVertexAttribArray(clr2);
   console.log('acolor =', clr);
+//  console.log('acolor2 =', clr2);
 };

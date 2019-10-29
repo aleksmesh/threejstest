@@ -38,7 +38,9 @@ var baseactions = {
     },
     primitivecolor: function() {
       console.log('piska!', this.primitivecolor);
-      drawTestFigure( this.gl, hexToGlColor(this.primitivecolor) );
+      var clr3comp = hexToGlColor(this.primitivecolor); 
+      console.log('okpok =', clr3comp);
+      drawTestFigure( this.gl, clr3comp );
       var colors = new Float32Array([
             1.0, 0.0, 0.0, // Vertex A (r,g,b)
             0.0, 1.0, 0.0, // Vertex B (r,g,b)

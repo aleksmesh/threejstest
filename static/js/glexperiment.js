@@ -1,12 +1,12 @@
 var hexToGlColor =function(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  var a = result ? {
+  var clr = result ? {
     r: parseInt(result[1], 16)/255.0,
     g: parseInt(result[2], 16)/255.0,
     b: parseInt(result[3], 16)/255.0,
     a: 1.0
   } : null;
-  console.log(a);
+  return clr;
 };
 
 var setBackgroundColor = function( gl, hex )
@@ -37,6 +37,7 @@ function initShaders( gl, vertex, fragment ) {
 
 var drawTestFigure = function(gl, figurecolor )
 {
+  console.log('gfigure color =', figurecolor);
   var vertextxt = `
     attribute vec4 a_color;
     varying vec4 v_color;
@@ -48,12 +49,16 @@ var drawTestFigure = function(gl, figurecolor )
     }`;
   var fragmenttxt = `
 //    precision medium float;
-//    varying vec4 v_color;
+    varying vec4 v_color;
 
     void main() {
-      gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
-//      gl_FragColor = v_color;
+//      gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+      gl_FragColor = v_color;
     }`;
+  var colorbuffer = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
+  gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW );
   var vertex = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource( vertex, vertextxt );
   gl.compileShader(vertex);
@@ -67,7 +72,8 @@ var drawTestFigure = function(gl, figurecolor )
 //  }
   gl.drawArrays( gl.POINTS, 0, 1 );
   var clr = gl.getAttribLocation( program, 'a_color' );
-  gl.enableVertexAttribArray(clr);
+  console.log('attribpointer =', clr );
+//  gl.enableVertexAttribArray(clr);
 //  var clr2 = gl.getAttribLocation( program, 'v_color' );
 //  gl.enableVertexAttribArray(clr2);
   console.log('acolor =', clr);

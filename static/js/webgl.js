@@ -4,8 +4,10 @@ var baseactions = {
     return {
       canvas: null,
       gl: null,
+      program: null,
       backgroundcolor: '#FFFFFF',
-      primitivecolor: '#000000'
+      primitivecolor: '#000000',
+      color: new Float32Array([1,0,0,1])
     }
   },
   created() {
@@ -18,6 +20,9 @@ var baseactions = {
     this.canvas = this.$refs.glcanvas;
     this.gl = this.canvas.getContext('webgl');
     this.windowResized()
+    var clr3comp = hexToGlColor(this.primitivecolor); 
+    this.program = createProgram(this.gl);
+    drawTestFigure( this.gl, this.color, this.program );
   },
   methods: {
     windowResized: function(e) {
@@ -25,27 +30,19 @@ var baseactions = {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
       }
-    },
-    setBackgroundColor: function(value) {
-      console.log(value);
-      console.log(this.backgroundcolor);
     }
   },
   watch: {
     backgroundcolor: function() {
-      console.log('nu hz shtoto');
       setBackgroundColor( this.gl, this.backgroundcolor );
     },
     primitivecolor: function() {
-      console.log('piska!', this.primitivecolor);
       var clr3comp = hexToGlColor(this.primitivecolor); 
-      console.log('okpok =', clr3comp);
-      drawTestFigure( this.gl, clr3comp );
-      var colors = new Float32Array([
-            1.0, 0.0, 0.0, // Vertex A (r,g,b)
-            0.0, 1.0, 0.0, // Vertex B (r,g,b)
-            0.0, 0.0, 1.0  // Vertex C (r,g,b)
-        ]);
+      this.color[0] = clr3comp.r;
+      this.color[1] = clr3comp.g;
+      this.color[2] = clr3comp.b;
+      this.color[3] = clr3comp.a;
+//      changeFigureColor( this.gl, clr3comp, this.program );
     }
   },
   template: `

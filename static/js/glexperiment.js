@@ -28,19 +28,18 @@ function initShaders( gl, vertex, fragment ) {
 
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
     console.log("Unable to initialize the shader program.", gl.getProgramInfoLog(shaderProgram) );
-    return;
+    return null;
   }
 
   gl.useProgram(shaderProgram);
   return shaderProgram;
 }
 
-var drawTestFigure = function(gl, figurecolor )
+var createProgram = function(gl)
 {
-  console.log('gfigure color =', figurecolor);
   var vertextxt = `
     attribute vec4 a_color;
-    varying vec4 v_color;
+    varying lowp vec4 v_color;
 
     void main() {
       gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 );
@@ -48,17 +47,12 @@ var drawTestFigure = function(gl, figurecolor )
       v_color = a_color;
     }`;
   var fragmenttxt = `
-//    precision medium float;
-    varying vec4 v_color;
+    varying lowp vec4 v_color;
 
     void main() {
-//      gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
       gl_FragColor = v_color;
     }`;
-  var colorbuffer = gl.createBuffer();
-  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
-  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
-  gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW );
+
   var vertex = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource( vertex, vertextxt );
   gl.compileShader(vertex);
@@ -66,16 +60,37 @@ var drawTestFigure = function(gl, figurecolor )
   gl.shaderSource( fragment, fragmenttxt );
   gl.compileShader(fragment);
   var program = initShaders( gl, vertex, fragment );
+  if ( null === program ) {
+    console.log('Ошибка компиляции шейдеров!');
+    return;
+  }
+  return program;
+}
+
+var drawTestFigure = function(gl, figurecolor, program )
+{
+
  
-//  if ( false === initShaders( gl, vertex, fragment ) ) {
-//    return;
-//  }
   gl.drawArrays( gl.POINTS, 0, 1 );
-  var clr = gl.getAttribLocation( program, 'a_color' );
-  console.log('attribpointer =', clr );
-//  gl.enableVertexAttribArray(clr);
-//  var clr2 = gl.getAttribLocation( program, 'v_color' );
-//  gl.enableVertexAttribArray(clr2);
-  console.log('acolor =', clr);
-//  console.log('acolor2 =', clr2);
+  var vertexcolor = gl.getAttribLocation( program, 'a_color' );
+  var colorbuffer = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+//  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
+  gl.bufferData( gl.ARRAY_BUFFER, figurecolor, gl.DYNAMIC_DRAW );
+  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+  gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
+  gl.enableVertexAttribArray( vertexcolor );
+};
+
+var changeFigureColor = function( gl, figurecolor, program )
+{
+  var vertexcolor = gl.getAttribLocation( program, 'a_color' );
+  console.log('OKPOK = ', vertexcolor );
+  var colorbuffer = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
+  gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW );
+  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+  gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
+  gl.enableVertexAttribArray( vertexcolor );
 };

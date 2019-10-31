@@ -6,8 +6,9 @@ var baseactions = {
       gl: null,
       program: null,
       backgroundcolor: '#FFFFFF',
-      primitivecolor: '#000000',
-      color: new Float32Array([1,0,0,1])
+      primitivecolor: '#0000FF',
+      color: new Float32Array([0,1,1]),
+      colorbuffer: null
     }
   },
   created() {
@@ -19,10 +20,11 @@ var baseactions = {
   mounted() {
     this.canvas = this.$refs.glcanvas;
     this.gl = this.canvas.getContext('webgl');
+    this.colorbuffer = this.gl.createBuffer();
     this.windowResized()
     var clr3comp = hexToGlColor(this.primitivecolor); 
     this.program = createProgram(this.gl);
-    drawTestFigure( this.gl, this.color, this.program );
+    drawTestFigure( this.gl, this.color, this.program, this.colorbuffer );
   },
   methods: {
     windowResized: function(e) {
@@ -35,14 +37,17 @@ var baseactions = {
   watch: {
     backgroundcolor: function() {
       setBackgroundColor( this.gl, this.backgroundcolor );
+      changeFigureColor( this.gl, this.color, this.program, this.colorbuffer );
     },
     primitivecolor: function() {
       var clr3comp = hexToGlColor(this.primitivecolor); 
       this.color[0] = clr3comp.r;
       this.color[1] = clr3comp.g;
       this.color[2] = clr3comp.b;
-      this.color[3] = clr3comp.a;
-//      changeFigureColor( this.gl, clr3comp, this.program );
+//      this.color[3] = clr3comp.a;
+      console.log(this.color);
+      setBackgroundColor( this.gl, this.backgroundcolor );
+      changeFigureColor( this.gl, this.color, this.program, this.colorbuffer );
     }
   },
   template: `

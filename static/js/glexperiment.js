@@ -67,30 +67,29 @@ var createProgram = function(gl)
   return program;
 }
 
-var drawTestFigure = function(gl, figurecolor, program )
+var drawTestFigure = function(gl, figurecolor, program, colorbuffer )
 {
-
- 
-  gl.drawArrays( gl.POINTS, 0, 1 );
   var vertexcolor = gl.getAttribLocation( program, 'a_color' );
-  var colorbuffer = gl.createBuffer();
+//  var colorbuffer = gl.createBuffer();
   gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
 //  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
-  gl.bufferData( gl.ARRAY_BUFFER, figurecolor, gl.DYNAMIC_DRAW );
-  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+  gl.bufferData( gl.ARRAY_BUFFER, figurecolor, gl.STATIC_DRAW );
+//  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
   gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
   gl.enableVertexAttribArray( vertexcolor );
+  gl.drawArrays( gl.POINTS, 0, 1 );
 };
 
-var changeFigureColor = function( gl, figurecolor, program )
+var changeFigureColor = function( gl, figurecolor, program, colorbuffer )
 {
-  var vertexcolor = gl.getAttribLocation( program, 'a_color' );
-  console.log('OKPOK = ', vertexcolor );
-  var colorbuffer = gl.createBuffer();
-  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
-  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
-  gl.bufferData( gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW );
-  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
-  gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
-  gl.enableVertexAttribArray( vertexcolor );
+ // var vertexcolor = gl.getAttribLocation( program, 'a_color' );
+//  console.log('OKPOK = ', vertexcolor );
+//  var colorbuffer = gl.createBuffer();
+ // gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+//  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
+//  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
+  gl.bufferData( gl.ARRAY_BUFFER, figurecolor, gl.STATIC_DRAW );
+  gl.drawArrays( gl.POINTS, 0, 1 );
+//  gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
+//  gl.enableVertexAttribArray( vertexcolor );
 };

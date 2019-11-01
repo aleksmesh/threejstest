@@ -42,7 +42,7 @@ var createProgram = function(gl)
     varying lowp vec4 v_color;
 
     void main() {
-      gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 );
+      gl_Position = vec4( 0.0, 0.0, 1.0, 1.0 );
       gl_PointSize = 10.0;
       v_color = a_color;
     }`;
@@ -70,26 +70,15 @@ var createProgram = function(gl)
 var drawTestFigure = function(gl, figurecolor, program, colorbuffer )
 {
   var vertexcolor = gl.getAttribLocation( program, 'a_color' );
-//  var colorbuffer = gl.createBuffer();
   gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
-//  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
   gl.bufferData( gl.ARRAY_BUFFER, figurecolor, gl.STATIC_DRAW );
-//  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
-  gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
+  gl.vertexAttribPointer( vertexcolor, 3, gl.FLOAT, false, 0, 0 );
   gl.enableVertexAttribArray( vertexcolor );
   gl.drawArrays( gl.POINTS, 0, 1 );
 };
 
 var changeFigureColor = function( gl, figurecolor, program, colorbuffer )
 {
- // var vertexcolor = gl.getAttribLocation( program, 'a_color' );
-//  console.log('OKPOK = ', vertexcolor );
-//  var colorbuffer = gl.createBuffer();
- // gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
-//  var arr = [ figurecolor.r, figurecolor.g, figurecolor.b, figurecolor.a ];
-//  gl.bindBuffer( gl.ARRAY_BUFFER, colorbuffer );
   gl.bufferData( gl.ARRAY_BUFFER, figurecolor, gl.STATIC_DRAW );
   gl.drawArrays( gl.POINTS, 0, 1 );
-//  gl.vertexAttribPointer( vertexcolor, 1, gl.FLOAT, false, 0, 0 );
-//  gl.enableVertexAttribArray( vertexcolor );
 };

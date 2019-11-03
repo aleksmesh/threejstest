@@ -11,3 +11,12 @@ async def webgl(request):
                                               context)
     response.headers['Content-Language'] = 'ru'
     return response
+
+@aiohttp_jinja2.template('oneprogram.html')
+async def oneprogram(request):
+    context = {}
+    response = aiohttp_jinja2.render_template('oneprogram.html',
+                                              request,
+                                              context)
+    response.headers['Content-Language'] = 'ru'
+    return response

@@ -7,9 +7,14 @@ import jinja2
 
 app = web.Application()
 setup_routes(app)
-okpok = app.router.add_static('/static/',
+app.router.add_static('/static/',
                       path=str( 'static'),
-                      name='static')
+                      name='static',
+                      follow_symlinks=True )
+#okpok = app.router.add_static('/static/js/goog/',
+#                      path=str( 'static/js/goog'),
+#                      name='goog')
+#print(okpok)
 
 aiohttp_jinja2.setup(app,
     loader=jinja2.FileSystemLoader('templates'))

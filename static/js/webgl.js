@@ -87,7 +87,6 @@ var baseactions = {
     backgroundcolor: function() {
       this.setBackgroundColor();
       this.drawFigures();
-//      changeFigureColor( this.gl, this.color, this.program, this.colorbuffer );
     },
     primitivecolor: function() {
       this.setBackgroundColor();

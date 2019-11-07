@@ -20,14 +20,23 @@ var baseactions = {
       programinfo: null,
       bufferinfo: null,
       arrays: {
-        position: { numComponents: 2, data: [0,0, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5] },
+        position: { numComponents: 2, data: [100,100, 200, 200, -200, 200, 200, -200] },
         color:    { numComponents: 4, data: [ 0, 255, 255, 255, ],type: Uint8Array }
       },
       shaders: {
         vertex:`
-          attribute vec4 a_position;
+          attribute vec2 a_position;
+          uniform vec2 resolution;
+          uniform vec2 translation;
+          uniform vec2 rotation;
           void main() {
-            gl_Position = a_position;
+            vec2 rotpos = vec2(
+              a_position.x*rotation.y + a_position.y*rotation.x,
+              a_position.y*rotation.y - a_position.x*rotation.x
+            );
+            vec2 pos = rotpos+translation;
+            vec2 normalpos = pos/resolution*2.0 - 1.0;
+            gl_Position = vec4( normalpos*vec2(1,-1), 0, 1 );
             gl_PointSize = 10.0;
           }`,
         fragment: `
@@ -64,7 +73,10 @@ var baseactions = {
       webglUtils.setBuffersAndAttributes( this.gl, this.programinfo, this.bufferinfo );
       var clr = hexToGlColor(this.primitivecolor)
       var uniform = {
-        u_color: [ clr.r, clr.g, clr.b, clr.a ]
+        u_color: [ clr.r, clr.g, clr.b, clr.a ],
+        resolution: [this.gl.canvas.width,this.gl.canvas.height],
+        translation:[500,500],
+        rotation:[1,0]
       };
       webglUtils.setUniforms( this.programinfo.uniformSetters, uniform );
       this.gl.drawArrays( this.gl.POINTS, 0, this.bufferinfo.numElements );

@@ -15,29 +15,35 @@ var baseactions = {
     return {
       backgroundcolor: '#FFFFFF',
       primitivecolor: '#000000',
+      primitiveangle: 0.0,
       canvas: null,
       gl: null,
       programinfo: null,
       bufferinfo: null,
       arrays: {
-        position: { numComponents: 2, data: [100,100, 200, 200, -200, 200, 200, -200] },
-        color:    { numComponents: 4, data: [ 0, 255, 255, 255, ],type: Uint8Array }
+        position: { numComponents: 2, data: [0,0, 200, 200, -200, 200, 200, -200] },
+        color:    { numComponents: 4, data: [ 0, 255, 255, 255, ],type: Uint8Array },
+        angle: { numComponents: 1, data: [ this.primitiveangle ] }
       },
       shaders: {
         vertex:`
-          attribute vec2 a_position;
+          attribute vec2 position;
           uniform vec2 resolution;
           uniform vec2 translation;
-          uniform vec2 rotation;
+          uniform float angle;
+          uniform float pntsize;
           void main() {
+            vec2 position2 = position - vec2(200.0, 200.0);
+            vec2 rot = vec2( cos(angle), sin(angle) );
             vec2 rotpos = vec2(
-              a_position.x*rotation.y + a_position.y*rotation.x,
-              a_position.y*rotation.y - a_position.x*rotation.x
+              position2.x*rot.x - position2.y*rot.y,
+              position2.x*rot.y + position2.y*rot.x
             );
+            rotpos += vec2(200.0,200.0);
             vec2 pos = rotpos+translation;
-            vec2 normalpos = pos/resolution*2.0 - 1.0;
-            gl_Position = vec4( normalpos*vec2(1,-1), 0, 1 );
-            gl_PointSize = 10.0;
+            vec2 normalpos = pos/resolution;
+            gl_Position = vec4( normalpos, 0, 1 );
+            gl_PointSize = pntsize;
           }`,
         fragment: `
           uniform lowp vec4 u_color;
@@ -58,10 +64,11 @@ var baseactions = {
     this.gl = this.canvas.getContext('webgl');
     this.windowResized()
     var clr3comp = hexToGlColor(this.primitivecolor);
-    this.bufferinfo = webglUtils.createBufferInfoFromArrays( this.gl, this.arrays );
-    this.programinfo = webglUtils.createProgramInfo( this.gl, [ this.shaders.vertex, this.shaders.fragment ] );
+    this.bufferinfo = twgl.createBufferInfoFromArrays( this.gl, this.arrays );
+    this.programinfo = twgl.createProgramInfo( this.gl, [ this.shaders.vertex, this.shaders.fragment ] );
     this.gl.useProgram( this.programinfo.program );
     this.windowResized();
+    requestAnimationFrame( this.drawFigures );
   },
   methods: {
     setBackgroundColor: function() {
@@ -70,16 +77,21 @@ var baseactions = {
       this.gl.clear( this.gl.COLOR_BUFFER_BIT );
     },
     drawFigures: function() {
-      webglUtils.setBuffersAndAttributes( this.gl, this.programinfo, this.bufferinfo );
+      this.setBackgroundColor();
+      twgl.setBuffersAndAttributes( this.gl, this.programinfo, this.bufferinfo );
       var clr = hexToGlColor(this.primitivecolor)
       var uniform = {
         u_color: [ clr.r, clr.g, clr.b, clr.a ],
         resolution: [this.gl.canvas.width,this.gl.canvas.height],
-        translation:[500,500],
-        rotation:[1,0]
+        translation:[00,00],
+        angle: Math.PI*this.primitiveangle,
+        pntsize: 10
       };
-      webglUtils.setUniforms( this.programinfo.uniformSetters, uniform );
-      this.gl.drawArrays( this.gl.POINTS, 0, this.bufferinfo.numElements );
+      twgl.setUniforms( this.programinfo.uniformSetters, uniform );
+//      this.gl.drawArrays( this.gl.POINTS, 0, this.bufferinfo.numElements );
+//      twgl.drawBufferInfo( this.gl, this.bufferinfo, this.gl.POINTS, this.bufferinfo.numElements );
+      twgl.drawBufferInfo( this.gl, this.bufferinfo, this.gl.POINTS, this.bufferinfo.numElements );
+      requestAnimationFrame( this.drawFigures );
     },
     windowResized: function(e) {
       if ( true === goog.isDefAndNotNull(this.canvas) ) {
@@ -92,17 +104,25 @@ var baseactions = {
           this.setBackgroundColor();
           this.drawFigures();
         }
+//        this.canvas.width = window.innerWidth;
+//        this.canvas.height = window.innerHeight;
+//        twgl.resizeCanvasToDisplaySize( this.gl.canvas );
+//        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
       }
     }
   },
   watch: {
     backgroundcolor: function() {
-      this.setBackgroundColor();
-      this.drawFigures();
+//      this.setBackgroundColor();
+//      this.drawFigures();
     },
     primitivecolor: function() {
-      this.setBackgroundColor();
-      this.drawFigures();
+//      this.setBackgroundColor();
+//      this.drawFigures();
+    },
+    primitiveangle: function() {
+//      this.setBackgroundColor();
+//      this.drawFigures();
     }
   },
   template: `
@@ -112,6 +132,7 @@ var baseactions = {
     <div class='choosebackgroundcolor'>
       <input type='color' v-model='backgroundcolor' value='#FFFFFF'>
       <input type='color' v-model='primitivecolor' value='#000000'>
+      <input type='range' v-model='primitiveangle' min='0' max='2' value='0' step='0.001' >
     </div>
   </div>
   `

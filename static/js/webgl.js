@@ -33,13 +33,13 @@ var baseactions = {
           uniform float angle;
           uniform float pntsize;
           void main() {
-            vec2 position2 = position - vec2(200.0, 200.0);
+            vec2 position2 = position - vec2(0.0, 200.0);
             vec2 rot = vec2( cos(angle), sin(angle) );
             vec2 rotpos = vec2(
               position2.x*rot.x - position2.y*rot.y,
               position2.x*rot.y + position2.y*rot.x
             );
-            rotpos += vec2(200.0,200.0);
+            rotpos += vec2(0.0,200.0);
             vec2 pos = rotpos+translation;
             vec2 normalpos = pos/resolution;
             gl_Position = vec4( normalpos, 0, 1 );

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang='ru'>
+  <head>
+    <meta charset='utf-8'>
+    <title>Основы</title>
+    <link rel='stylesheet' type='text/css' href='{{ app.router.static.url_for(filename='css/webgl.css') }}'> 
+  </head>
+  <body>
+    <canvas id='glcanvas'>
+    </canvas>
+  </body>
+  <script src={{ app.router.static.url_for(filename='js/vue.js') }} type='text/javascript'></script>
+  <script src={{ app.router.static.url_for(filename='js/goog/base.js') }} type='text/javascript'></script>
+  <script src={{ app.router.static.url_for(filename='js/geo.js') }} type='text/javascript'></script>
+  <script src={{ app.router.static.url_for(filename='js/base.js') }} type='text/javascript'></script>
+  <script src={{ app.router.static.url_for(filename='js/eventlistener.js') }} type='text/javascript'></script>
+</html>

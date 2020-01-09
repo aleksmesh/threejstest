@@ -21,7 +21,7 @@ var baseactions = {
       programinfo: null,
       bufferinfo: null,
       arrays: {
-        position: { numComponents: 2, data: [0,0, 200, 200, -200, 200, 200, -200] },
+        position: { numComponents: 3, data: [0,0, 200, 200, -200, 200] },
         color:    { numComponents: 4, data: [ 0, 255, 255, 255, ],type: Uint8Array },
         angle: { numComponents: 1, data: [ this.primitiveangle ] }
       },
@@ -90,8 +90,12 @@ var baseactions = {
       twgl.setUniforms( this.programinfo.uniformSetters, uniform );
 //      this.gl.drawArrays( this.gl.POINTS, 0, this.bufferinfo.numElements );
 //      twgl.drawBufferInfo( this.gl, this.bufferinfo, this.gl.POINTS, this.bufferinfo.numElements );
-      twgl.drawBufferInfo( this.gl, this.bufferinfo, this.gl.POINTS, this.bufferinfo.numElements );
+      twgl.drawBufferInfo( this.gl, this.bufferinfo, this.gl.TRIANGLES, this.bufferinfo.numElements );
       requestAnimationFrame( this.drawFigures );
+      this.primitiveangle -= 0.002
+      if ( 0.0 > this.primitiveangle ) {
+        this.primitiveangle = 2.0;
+      }
     },
     windowResized: function(e) {
       if ( true === goog.isDefAndNotNull(this.canvas) ) {

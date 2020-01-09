@@ -1,10 +1,12 @@
 from views.testview import index
 from views.webgl import webgl
 from views.webgl import oneprogram
+from views.base import base
 
 
 def setup_routes(app):
   app.router.add_get('/', index)
   app.router.add_get('/webgl', webgl)
+  app.router.add_get('/base', base )
   app.router.add_get('/oneprogram', oneprogram)
   app.router.add_get('/oneprogram/', oneprogram)

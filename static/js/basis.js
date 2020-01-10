@@ -63,7 +63,7 @@ meteo.basis.Point.prototype.isEqual = function( pnt )
 
 /*! 
   * \brief Оператор сравнения<
-* \param pnt - точка (meteto.geobasis.Point), с которой выполняется сравнение
+* \param pnt - точка (meteto.basis.Point), с которой выполняется сравнение
 * \return - true - в случае, если x() < pnt.x()  и y() < pnt.y, иначе - false 
 */
 meteo.basis.Point.prototype.lt = function( pnt )
@@ -80,7 +80,7 @@ meteo.basis.Point.prototype.lt = function( pnt )
 
 /*! 
   * \brief Оператор сравнения>
-* \param pnt - точка (meteto.geobasis.Point), с которой выполняется сравнение
+* \param pnt - точка (meteto.basis.Point), с которой выполняется сравнение
 * \return - true - в случае, если x() > pnt.x()  и y() > pnt.y, иначе - false 
 */
 meteo.basis.Point.prototype.gt = function( pnt )
@@ -131,6 +131,24 @@ meteo.basis.geopoint2point3d = function( gp )
   var z = meteo.basis.RVS*sfi;
   var pnt = new meteo.basis.Point3d( x, y, z );
   return pnt;
+};
+
+meteo.basis.geoarray2point3drray( gp )
+{
+  if ( false === goog.isDefAndNotNull(gp) ) {
+    return null;
+  }
+  if ( 0 == gp.length ) {
+    return null;
+  }
+  let p3darray = new Float32Array( gp.length*3 );
+  for ( let i = 0; i < gp.length; ++i ) {
+    let p3d = geopoint2point3d( gp[i] );
+    p3darray[i] = p3d.x_;
+    p3darray[i+1] = p3d.y_;
+    p3darray[i+2] = p3d.z_;
+  };
+  return p3darray;
 };
 
 meteo.basis.GeoPoint = function( latt, lonn, altt = 0.0 )
@@ -195,14 +213,4 @@ meteo.basis.GeoPoint.prototype.setLatDeg = function(lat)
 meteo.basis.GeoPoint.prototype.setLonDeg = function(lon)
 {
   return this.lon_ = lon*meteo.basis.DEG2RAD;
-};
-
-meteo.basis.GeoVector = function()
-{
-  this.skelet_ = [];
-};
-
-meteo.basis.GeoVector.prototype.push = function(point)
-{
-  this.skelet_.push(point);
 };

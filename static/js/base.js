@@ -73,16 +73,11 @@ meteo.m4.perspective = function( fov, ratio, near, far, opt_m )
 {
   let f = 1.0/Math.tan(fov/2);                  // f/ratio, 0,                          0,   0,
   let range_inv = 1.0/( near - far );           // 0,       f,                          0,   0,
-  let m  = opt_m || goog.math.Matrix( 4, 4 );   // 0,       0,  (near + far) * rangeInv,    -1,
+  let m  = opt_m || new goog.math.Matrix( 4, 4 );   // 0,       0,  (near + far) * rangeInv,    -1,
   m.setValueAt( 0, 0, f/ratio );                // 0,       0,  near * far * rangeInv * 2,   0
   m.setValueAt( 1, 1, f );
   m.setValueAt( 2, 2, (near + far)*range_inv  );
   m.setValueAt( 2, 3, -1  );
   m.setValueAt( 3, 2, near*far*range_inv*2 );
   return m;
-    
-    
-    
-    
-
 };

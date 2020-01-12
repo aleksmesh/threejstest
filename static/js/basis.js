@@ -133,7 +133,7 @@ meteo.basis.geopoint2point3d = function( gp )
   return pnt;
 };
 
-meteo.basis.geoarray2point3drray( gp )
+meteo.basis.geoarray2point3drray = function( gp )
 {
   if ( false === goog.isDefAndNotNull(gp) ) {
     return null;
@@ -142,8 +142,8 @@ meteo.basis.geoarray2point3drray( gp )
     return null;
   }
   let p3darray = new Float32Array( gp.length*3 );
-  for ( let i = 0; i < gp.length; ++i ) {
-    let p3d = geopoint2point3d( gp[i] );
+  for ( let i = 0; i < gp.length; i+=3 ) {
+    let p3d = meteo.basis.geopoint2point3d( gp[i] );
     p3darray[i] = p3d.x_;
     p3darray[i+1] = p3d.y_;
     p3darray[i+2] = p3d.z_;

@@ -48,7 +48,45 @@ var webgl = new Vue({
 //    }
     this.windowResized();
     let exp = new meteo.experiment( this.canvas );
-    exp.createProgramInfo( meteo.experiment.defaultVshader(), meteo.experiment.defaultFshader() );
+    exp.latitudes = meteo.experiment.latitudeRings();
+    for ( let i = 0; i < exp.latitudes.length; ++i ) {
+      exp.latarrays.push( meteo.basis.geoarray2point3drray(exp.latitudes[i]) );
+    }
+    exp.createProgramInfo( meteo.experiment.defaultVshader(),
+                           meteo.experiment.defaultFshader() );
+    let lot_of_arrays = [];
+    for ( let i = 0; i < exp.latarrays.length; ++i ) {
+      let arrays = {
+        position: exp.latarrays[i]
+      };
+      lot_of_arrays.push(arrays);
+    }
+    let mrot = meteo.experiment.rotmatrix();
+    let mper = meteo.experiment.projmatrix();
+    let mres = mrot.multiply(mper);
+    let okpok = {
+      matrix: []
+    };
+    for ( let i = 0; i < 4; ++i ) {
+    for ( let j = 0; j < 4; ++j ) {
+      okpok.matrix.push( mres.array_[i][j] );
+    }
+    }
+    let animate = function() {
+      exp.glcontext.enable( exp.glcontext.DEPTH_TEST );
+      exp.glcontext.clearColor( 1, 1, 1, 1 );
+      exp.glcontext.clearDepth( 1.0 );
+      exp.glcontext.clear( exp.glcontext.COLOR_BUFFER_BIT | exp.glcontext.DEPTH_BUFFER_BIT );
+      const bufferinfo = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[12] );
+      exp.glcontext.useProgram( exp.programinfo.program );
+      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo );
+      twgl.setUniforms( exp.glcontext, okpok );
+      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.LINES  );
+//      twgl.setUniforms( programinfo,  );
+
+      requestAnimationFrame(animate);
+    };
+    animate();
 //    this.gl = this.canvas.getContext('webgl');
 //    this.windowResized()
 //    var clr3comp = hexToGlColor(this.primitivecolor);

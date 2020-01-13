@@ -63,7 +63,8 @@ var webgl = new Vue({
     }
     let mrot = meteo.experiment.rotmatrix();
     let mper = meteo.experiment.projmatrix();
-    let mres = mrot.multiply(mper);
+    let mres = mper;//mrot.multiply(mper);
+    let lookat = meteo.experiment.lookat();
     let okpok = {
       matrix: []
     };

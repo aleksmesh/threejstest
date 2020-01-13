@@ -81,3 +81,47 @@ meteo.m4.perspective = function( fov, ratio, near, far, opt_m )
   m.setValueAt( 3, 2, near*far*range_inv*2 );
   return m;
 };
+
+meteo.m4.cross = function( a, b )
+{
+  return [ a[1]*b[2] - a[2]*b[1],
+           a[2]*b[0] - a[0]*b[2],
+           a[0]*b[1] - a[1]*b[0] ];
+};
+
+meteo.m4.subtractVectors = function( a, b )
+{
+  return [ a[0] - b[0], a[1] - b[1], a[2] - b[2] ];
+};
+
+meteo.m4.normalize = function(v)
+{
+  let length = Math.sqrt( v[0]*v[0] + v[1]*v[1] + v[2]*v[2] );
+  if ( length > 0.00001 ) {
+    return [ v[0]/length, v[1]/length, v[2]/length ];
+  }
+  return [ 0, 0, 0 ];
+};
+
+meteo.m4.lookAt = function( camera_pos, target, up, opt_m )
+{
+  let m = opt_m || new goog.math.Matrix( 4, 4 );
+  var zAxis = normalize(
+    subtractVectors( camera_pos, target ) );
+  var xAxis = normalize( cross( up, zAxis ) );
+  var yAxis = normalize( cross( zAxis, xAxis ) );
+  m.setValueAt( 0, 0, xAxis[0] );
+  m.setValueAt( 0, 1, xAxis[1] );
+  m.setValueAt( 0, 2, xAxis[2] );
+  m.setValueAt( 1, 0, yAxis[0] );
+  m.setValueAt( 1, 1, yAxis[1] );
+  m.setValueAt( 1, 2, yAxis[2] );
+  m.setValueAt( 2, 0, zAxis[0] );
+  m.setValueAt( 2, 1, zAxis[1] );
+  m.setValueAt( 2, 2, zAxis[2] );
+  m.setValueAt( 3, 0, camera_pos[0] );
+  m.setValueAt( 3, 1, camera_pos[1] );
+  m.setValueAt( 3, 2, camera_pos[2] );
+  m.setValueAt( 3, 3, 1 );
+  return m;
+};

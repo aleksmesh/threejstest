@@ -67,6 +67,11 @@ meteo.experiment.rotmatrix = function()
 
 meteo.experiment.projmatrix = function()
 {
-  let pers = meteo.m4.perspective( 75, 1, -5000000, 5000000 );
+  let pers = meteo.m4.perspective( Math.PI/3, 1, 1, 5000 );
   return pers;
+};
+
+meteo.experiment.lookat = function()
+{
+  let look = meteo.m4.lookAt( [ 0, -5000000, 0 ], [  ], [] );
 };

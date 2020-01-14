@@ -69,12 +69,12 @@ meteo.m4.scaling = function( sx, sy, sz, opt_m ) {    //  sx, 0 , 0,  0,
     return m;
 };
 
-meteo.m4.perspective = function( fov, ratio, near, far, opt_m )
+meteo.m4.perspective = function( fov, aspect, near, far, opt_m )
 {
-  let f = 1.0/Math.tan(fov/2);                  // f/ratio, 0,                          0,   0,
+  let f = Math.tan( Math.PI*0.5 - 0.5*fov );                  // f/aspect, 0,                          0,   0,
   let range_inv = 1.0/( near - far );           // 0,       f,                          0,   0,
   let m  = opt_m || new goog.math.Matrix( 4, 4 );   // 0,       0,  (near + far) * rangeInv,    -1,
-  m.setValueAt( 0, 0, f/ratio );                // 0,       0,  near * far * rangeInv * 2,   0
+  m.setValueAt( 0, 0, f/aspect );                // 0,       0,  near * far * rangeInv * 2,   0
   m.setValueAt( 1, 1, f );
   m.setValueAt( 2, 2, (near + far)*range_inv  );
   m.setValueAt( 2, 3, -1  );
@@ -106,10 +106,10 @@ meteo.m4.normalize = function(v)
 meteo.m4.lookAt = function( camera_pos, target, up, opt_m )
 {
   let m = opt_m || new goog.math.Matrix( 4, 4 );
-  var zAxis = normalize(
-    subtractVectors( camera_pos, target ) );
-  var xAxis = normalize( cross( up, zAxis ) );
-  var yAxis = normalize( cross( zAxis, xAxis ) );
+  var zAxis = meteo.m4.normalize(
+    meteo.m4.subtractVectors( camera_pos, target ) );
+  var xAxis = meteo.m4.normalize( meteo.m4.cross( up, zAxis ) );
+  var yAxis = meteo.m4.normalize( meteo.m4.cross( zAxis, xAxis ) );
   m.setValueAt( 0, 0, xAxis[0] );
   m.setValueAt( 0, 1, xAxis[1] );
   m.setValueAt( 0, 2, xAxis[2] );

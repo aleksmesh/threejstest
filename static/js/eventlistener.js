@@ -61,28 +61,109 @@ var webgl = new Vue({
       };
       lot_of_arrays.push(arrays);
     }
-    let mrot = meteo.experiment.rotmatrix();
-    let mper = meteo.experiment.projmatrix();
-    let mres = mper;//mrot.multiply(mper);
-    let lookat = meteo.experiment.lookat();
-    let okpok = {
-      matrix: []
+
+    let arrays = {
+      position: [
+      // Передняя грань
+      -1.0, -1.0,  1.0,
+       1.0, -1.0,  1.0,
+       1.0,  1.0,  1.0,
+      -1.0,  1.0,  1.0,
+      
+      // Задняя грань
+      -1.0, -1.0, -1.0,
+      -1.0,  1.0, -1.0,
+       1.0,  1.0, -1.0,
+       1.0, -1.0, -1.0,
+      
+      // Верхняя грань
+      -1.0,  1.0, -1.0,
+      -1.0,  1.0,  1.0,
+       1.0,  1.0,  1.0,
+       1.0,  1.0, -1.0,
+      
+      // Нижняя грань
+      -1.0, -1.0, -1.0,
+       1.0, -1.0, -1.0,
+       1.0, -1.0,  1.0,
+      -1.0, -1.0,  1.0,
+      
+      // Правая грань
+       1.0, -1.0, -1.0,
+       1.0,  1.0, -1.0,
+       1.0,  1.0,  1.0,
+       1.0, -1.0,  1.0,
+      
+      // Левая грань
+      -1.0, -1.0, -1.0,
+      -1.0, -1.0,  1.0,
+      -1.0,  1.0,  1.0,
+      -1.0,  1.0, -1.0
+    ],
+    color: [
+      1.0,  0.0,  0.0,  1.0,    // Front face: white
+      1.0,  0.0,  0.0,  1.0,    // Back face: red
+      1.0,  1.0,  0.0,  1.0,    // Top face: green
+      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
+      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
+      1.0,  0.0,  1.0,  1.0,     // Left face: purple
+      1.0,  0.0,  0.0,  1.0,    // Front face: white
+      1.0,  0.0,  0.0,  1.0,    // Back face: red
+      0.0,  1.0,  0.0,  1.0,    // Top face: green
+      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
+      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
+      1.0,  0.0,  1.0,  1.0,     // Left face: purple
+      1.0,  0.0,  0.0,  1.0,    // Front face: white
+      1.0,  0.0,  0.0,  1.0,    // Back face: red
+      0.0,  1.0,  0.0,  1.0,    // Top face: green
+      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
+      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
+      1.0,  0.0,  1.0,  1.0,     // Left face: purple
+      1.0,  0.0,  0.0,  1.0,    // Front face: white
+      1.0,  0.0,  0.0,  1.0,    // Back face: red
+      0.0,  1.0,  0.0,  1.0,    // Top face: green
+      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
+      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
+      1.0,  0.0,  1.0,  1.0,     // Left face: purple
+    ]
     };
-    for ( let i = 0; i < 4; ++i ) {
-    for ( let j = 0; j < 4; ++j ) {
-      okpok.matrix.push( mres.array_[i][j] );
-    }
-    }
+
+
+
     let animate = function() {
+
+      let mrot = meteo.experiment.projmatrix().multiply( meteo.m4.translation(0.0,0.0,0) ).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
+      let mper = meteo.experiment.projmatrix();
+      let mres = mrot.multiply(mper);
+      let lookat = meteo.experiment.lookat();
+      let viewproj = mper.multiply(lookat);
+      let uniforms = {
+        matr: []
+      };
+      for ( let i = 0; i < 4; ++i ) {
+        for ( let j = 0; j < 4; ++j ) {
+          uniforms.matr.push( mrot.getValueAt( i, j ) );
+//          uniforms.matr.push( viewproj.getValueAt( i, j ) );
+        }
+      }
+
       exp.glcontext.enable( exp.glcontext.DEPTH_TEST );
       exp.glcontext.clearColor( 1, 1, 1, 1 );
-      exp.glcontext.clearDepth( 1.0 );
+//      exp.glcontext.clearDepth( 1.0 );
       exp.glcontext.clear( exp.glcontext.COLOR_BUFFER_BIT | exp.glcontext.DEPTH_BUFFER_BIT );
-      const bufferinfo = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[12] );
+      const bufferinfo = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[13] );
+      const bufferinfo2 = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[9] );
+      const bufferinfo3 = twgl.createBufferInfoFromArrays( exp.glcontext, arrays );
+//      twgl.createUniformSetters( exp.glcontext, exp.programinfo.program );
       exp.glcontext.useProgram( exp.programinfo.program );
-      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo );
-      twgl.setUniforms( exp.glcontext, okpok );
-      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.LINES  );
+      twgl.setUniforms( exp.programinfo, uniforms );
+//      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo );
+//      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.LINES );
+//      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.LINES );
+
+      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo3 );
+      twgl.drawBufferInfo( exp.glcontext, bufferinfo3, exp.glcontext.TRIANGLES );
+//      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.TRIANGLES );
 //      twgl.setUniforms( programinfo,  );
 
       requestAnimationFrame(animate);

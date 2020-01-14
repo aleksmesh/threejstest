@@ -8,11 +8,12 @@ meteo.experiment = function( canvas )
     console.log('ups! i havn\'t canvas!');
   }
   else {
-    this.glcontext = this.canvas.getContext('webgl');
+    this.glcontext = this.canvas.getContext('webgl', { antialias: true } );
   }
   if ( false === goog.isDefAndNotNull( this.glcontext ) ) {
     console.log('ups! i havn\'t webgl context!');
   }
+  console.log( 'atribs =', this.glcontext.getContextAttributes() );
   this.programinfo = null;
   this.latitudes = null;
   this.latarrays = [];
@@ -27,9 +28,14 @@ meteo.experiment.defaultVshader = function()
 {
   return `
     attribute vec4 position;
-    uniform mat4 matrix;
+    attribute vec4 color;
+//    mat4 matrix = mat4( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
+    varying lowp vec4 vcolor;
+    uniform mat4 matr;
     void main() {
-      gl_Position = matrix*position;
+        gl_Position = matr*position;
+//      gl_Position = position;
+      vcolor = color;
     }
   `;
 };
@@ -38,8 +44,10 @@ meteo.experiment.defaultFshader = function()
 {
   return `
     precision mediump float;
+    varying lowp vec4 vcolor;
     void main() {
-      gl_FragColor = vec4( 1.0, 0, 0, 1.0);
+      gl_FragColor = vcolor;
+//      gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
     }
   `;
 };
@@ -59,19 +67,27 @@ meteo.experiment.latitudeRings = function()
 
 meteo.experiment.rotmatrix = function()
 {
-  let rx = meteo.m4.xrotation( meteo.basis.DEG2RAD*12 );
-  let ry = meteo.m4.yrotation( meteo.basis.DEG2RAD*12 );
-  let rz = meteo.m4.zrotation( meteo.basis.DEG2RAD*12 );
+  let rx = meteo.m4.xrotation( meteo.basis.DEG2RAD*45 );
+  let ry = meteo.m4.yrotation( meteo.basis.DEG2RAD*45 );
+  let rz = meteo.m4.zrotation( meteo.basis.DEG2RAD*45 );
   return rx.multiply(ry).multiply(rz);
 };
 
 meteo.experiment.projmatrix = function()
 {
-  let pers = meteo.m4.perspective( Math.PI/3, 1, 1, 5000 );
+  let pers = meteo.m4.perspective( Math.PI/3, 1, 0, 1 );
   return pers;
 };
 
 meteo.experiment.lookat = function()
 {
-  let look = meteo.m4.lookAt( [ 0, -5000000, 0 ], [  ], [] );
+  let pos  = [ 1, 0, 0 ];
+  let cam = meteo.m4.xrotation( meteo.basis.DEG2RAD*90 );
+  cam = cam.multiply( meteo.m4.scaling( 0.2, 0.2, 0.2 ) );
+  cam = cam.multiply( meteo.m4.translation( 0, 0, 0 ) );
+  let campos = [ cam.getValueAt( 3, 0 ), cam.getValueAt( 3, 1 ), cam.getValueAt( 3, 2 ) ];
+  let up = [ 0, 1, 0 ];
+  let look = meteo.m4.lookAt( campos, [ 0, 0, 1 ], up );
+  let viewm = look.getInverse();
+  return viewm;
 };

@@ -10,14 +10,15 @@ goog.provide('meteo.m4.scaling');
 goog.provide('meteo.m4.perspective');
 
 meteo.m4.translation = function( tx, ty, tz, opt_m ) {//  1,  0,  0,  0,
+    console.log('trans = ', parseInt(tx,10), parseInt(ty,10),parseInt(tz));
     let m = opt_m || new goog.math.Matrix( 4, 4 );    //  0,  1,  0,  0,
     m.setValueAt( 0, 0, 1 );                          //  0,  0,  1,  0,
     m.setValueAt( 1, 1, 1 );                          //  tx, ty, tz, 1,
     m.setValueAt( 2, 2, 1 );
     m.setValueAt( 3, 3, 1 );
-    m.setValueAt( 3, 0, tx );
-    m.setValueAt( 3, 1, ty );
-    m.setValueAt( 3, 2, tz );
+    m.setValueAt( 3, 0,  parseInt(tx,10) );
+    m.setValueAt( 3, 1,  parseInt(ty,10) );
+    m.setValueAt( 3, 2,  parseInt(tz,10) );
     return m;
 };
 

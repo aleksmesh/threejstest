@@ -17,9 +17,45 @@ body {
   padding: 0;
 }
 
-.choosebackgroundcolor {
+.xrotation {
   position: fixed;
   top: 30px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+.yrotation {
+  position: fixed;
+  top: 50px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+.zrotation {
+  position: fixed;
+  top: 70px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.xtranslate {
+  position: fixed;
+  top: 90px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+.ytranslate {
+  position: fixed;
+  top: 110px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+.ztranslate {
+  position: fixed;
+  top: 130px;
   left: 30px;
   margin: 0;
   padding: 0;

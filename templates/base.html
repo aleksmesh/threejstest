@@ -6,8 +6,18 @@
     <link rel='stylesheet' type='text/css' href='{{ app.router.static.url_for(filename='css/webgl.css') }}'> 
   </head>
   <body>
-    <canvas id='glcanvas'>
-    </canvas>
+    <div id='experiment'>
+      <canvas ref='glcanvas' id='glcanvas'>
+      </canvas>
+      <div>
+        <input class='xrotation' type='range' min='0' max='360' v-model='xrotation'>
+        <input class='yrotation' type='range' min='0' max='360' v-model='yrotation'>
+        <input class='zrotation' type='range' min='0' max='360' v-model='zrotation'>
+        <input class='xtranslate' type='range' min='-100' max='100' v-model='xtranslate'>
+        <input class='ytranslate' type='range' min='-100' max='100' v-model='ytranslate'>
+        <input class='ztranslate' type='range' min='-100' max='100' v-model='ztranslate'>
+      </div>
+    </div>
   </body>
   <script src={{ app.router.static.url_for(filename='js/vue.js') }} type='text/javascript'></script>
   <script src={{ app.router.static.url_for(filename='js/goog/base.js') }} type='text/javascript'></script>

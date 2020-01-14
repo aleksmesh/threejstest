@@ -4,11 +4,17 @@ goog.require('meteo.basis');
 goog.require('meteo.experiment');
 
 var webgl = new Vue({
-  el: '#glcanvas',
+  el: '#experiment',
   data: function() {
     return {
       canvas: null,
-      glcontext: null
+      glcontext: null,
+      xrotation: 0,
+      yrotation: 0,
+      zrotation: 0,
+      xtranslate: 0,
+      ytranslate: 0,
+      ztranslate: 0,
     }
   },
   created() {
@@ -17,8 +23,13 @@ var webgl = new Vue({
   destroyed() {
     window.removeEventListener('resize', this.windowResized )
   },
+  watch: {
+    xrotation: function(val) {
+      console.log('uh', val);
+    }
+  },
   mounted() {
-    this.canvas = this.$el;
+    this.canvas = this.$refs['glcanvas'];
 //    if ( false === goog.isDefAndNotNull( this.canvas ) ) {
 //      console.log('ups! i havn\'t canvas!');
 //    }
@@ -100,26 +111,34 @@ var webgl = new Vue({
       -1.0,  1.0,  1.0,
       -1.0,  1.0, -1.0
     ],
+    indices:[
+      0,  1,  2,      0,  2,  3,    // front
+      4,  5,  6,      4,  6,  7,    // back
+      8,  9,  10,     8,  10, 11,   // top
+      12, 13, 14,     12, 14, 15,   // bottom
+      16, 17, 18,     16, 18, 19,   // right
+      20, 21, 22,     20, 22, 23    // left
+    ],
     color: [
-      1.0,  0.0,  0.0,  1.0,    // Front face: white
+      0.0,  0.0,  0.0,  1.0,    // Front face: white
       1.0,  0.0,  0.0,  1.0,    // Back face: red
       1.0,  1.0,  0.0,  1.0,    // Top face: green
       0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
       1.0,  1.0,  0.0,  1.0,    // Right face: yellow
       1.0,  0.0,  1.0,  1.0,     // Left face: purple
       1.0,  0.0,  0.0,  1.0,    // Front face: white
-      1.0,  0.0,  0.0,  1.0,    // Back face: red
+      0.0,  0.0,  0.0,  1.0,    // Back face: red
       0.0,  1.0,  0.0,  1.0,    // Top face: green
       0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
       1.0,  1.0,  0.0,  1.0,    // Right face: yellow
       1.0,  0.0,  1.0,  1.0,     // Left face: purple
       1.0,  0.0,  0.0,  1.0,    // Front face: white
-      1.0,  0.0,  0.0,  1.0,    // Back face: red
+      0.0,  0.0,  0.0,  1.0,    // Back face: red
       0.0,  1.0,  0.0,  1.0,    // Top face: green
       0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
       1.0,  1.0,  0.0,  1.0,    // Right face: yellow
       1.0,  0.0,  1.0,  1.0,     // Left face: purple
-      1.0,  0.0,  0.0,  1.0,    // Front face: white
+      0.0,  0.0,  0.0,  1.0,    // Front face: white
       1.0,  0.0,  0.0,  1.0,    // Back face: red
       0.0,  1.0,  0.0,  1.0,    // Top face: green
       0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
@@ -130,10 +149,14 @@ var webgl = new Vue({
 
 
 
+    let vu = this;
     let animate = function() {
+      console.log( vu.xtranslate, vu.ytranslate,vu.ztranslate);
 
 //      let mrot = meteo.experiment.projmatrix().multiply( meteo.m4.translation(-3.6, 2,0.70) ).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
-      let mrot = meteo.m4.translation(-3.6, 2,0.70).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
+      let mrot = meteo.experiment.projmatrix().multiply(meteo.experiment.rotmatrix( vu.xrotation, vu.yrotation, vu.zrotation )).multiply(
+        meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate)        
+        ).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
       let mper = meteo.experiment.projmatrix();
       let mres = mrot.multiply(mper);
       let lookat = meteo.experiment.lookat();

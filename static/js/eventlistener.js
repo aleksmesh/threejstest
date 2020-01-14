@@ -132,7 +132,8 @@ var webgl = new Vue({
 
     let animate = function() {
 
-      let mrot = meteo.experiment.projmatrix().multiply( meteo.m4.translation(0.0,0.0,0) ).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
+//      let mrot = meteo.experiment.projmatrix().multiply( meteo.m4.translation(-3.6, 2,0.70) ).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
+      let mrot = meteo.m4.translation(-3.6, 2,0.70).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
       let mper = meteo.experiment.projmatrix();
       let mres = mrot.multiply(mper);
       let lookat = meteo.experiment.lookat();

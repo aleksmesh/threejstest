@@ -14,7 +14,7 @@ var webgl = new Vue({
       zrotation: 0,
       xtranslate: 0,
       ytranslate: 0,
-      ztranslate: 0,
+      ztranslate: -6,
     }
   },
   created() {
@@ -25,7 +25,7 @@ var webgl = new Vue({
   },
   watch: {
     xrotation: function(val) {
-      console.log('uh', val);
+//      console.log('uh', val);
     }
   },
   mounted() {
@@ -73,43 +73,53 @@ var webgl = new Vue({
       lot_of_arrays.push(arrays);
     }
 
+    var colors = [
+      [0.4,  1.0,  0.0,  1.0],    // Front face: white
+      [1.0,  0.0,  0.0,  1.0],    // Back face: red
+      [0.0,  0.6,  0.2,  1.0],    // Top face: green
+      [0.7,  0.0,  0.4,  1.0],    // Bottom face: blue
+      [0.7,  0.5,  0.0,  1.0],    // Right face: yellow
+      [0.7,  0.0,  0.2,  1.0]     // Left face: purple
+    ];
+
+
     let arrays = {
       position: [
-      // Передняя грань
-      -1.0, -1.0,  1.0,
-       1.0, -1.0,  1.0,
-       1.0,  1.0,  1.0,
-      -1.0,  1.0,  1.0,
-      
-      // Задняя грань
-      -1.0, -1.0, -1.0,
-      -1.0,  1.0, -1.0,
-       1.0,  1.0, -1.0,
-       1.0, -1.0, -1.0,
-      
-      // Верхняя грань
-      -1.0,  1.0, -1.0,
-      -1.0,  1.0,  1.0,
-       1.0,  1.0,  1.0,
-       1.0,  1.0, -1.0,
-      
-      // Нижняя грань
-      -1.0, -1.0, -1.0,
-       1.0, -1.0, -1.0,
-       1.0, -1.0,  1.0,
-      -1.0, -1.0,  1.0,
-      
-      // Правая грань
-       1.0, -1.0, -1.0,
-       1.0,  1.0, -1.0,
-       1.0,  1.0,  1.0,
-       1.0, -1.0,  1.0,
-      
-      // Левая грань
-      -1.0, -1.0, -1.0,
-      -1.0, -1.0,  1.0,
-      -1.0,  1.0,  1.0,
-      -1.0,  1.0, -1.0
+        // Front face
+        -1.0, -1.0,  1.0,
+         1.0, -1.0,  1.0,
+         1.0,  1.0,  1.0,
+        -1.0,  1.0,  1.0,
+
+        // Back face
+        -1.0, -1.0, -1.0,
+        -1.0,  1.0, -1.0,
+         1.0,  1.0, -1.0,
+         1.0, -1.0, -1.0,
+
+        // Top face
+        -1.0,  1.0, -1.0,
+        -1.0,  1.0,  1.0,
+         1.0,  1.0,  1.0,
+         1.0,  1.0, -1.0,
+
+        // Bottom face
+        -1.0, -1.0, -1.0,
+         1.0, -1.0, -1.0,
+         1.0, -1.0,  1.0,
+        -1.0, -1.0,  1.0,
+
+        // Right face
+         1.0, -1.0, -1.0,
+         1.0,  1.0, -1.0,
+         1.0,  1.0,  1.0,
+         1.0, -1.0,  1.0,
+
+        // Left face
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0,  1.0,
+        -1.0,  1.0,  1.0,
+        -1.0,  1.0, -1.0,
     ],
     indices:[
       0,  1,  2,      0,  2,  3,    // front
@@ -119,73 +129,118 @@ var webgl = new Vue({
       16, 17, 18,     16, 18, 19,   // right
       20, 21, 22,     20, 22, 23    // left
     ],
-    color: [
-      0.0,  0.0,  0.0,  1.0,    // Front face: white
-      1.0,  0.0,  0.0,  1.0,    // Back face: red
-      1.0,  1.0,  0.0,  1.0,    // Top face: green
-      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
-      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
-      1.0,  0.0,  1.0,  1.0,     // Left face: purple
-      1.0,  0.0,  0.0,  1.0,    // Front face: white
-      0.0,  0.0,  0.0,  1.0,    // Back face: red
-      0.0,  1.0,  0.0,  1.0,    // Top face: green
-      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
-      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
-      1.0,  0.0,  1.0,  1.0,     // Left face: purple
-      1.0,  0.0,  0.0,  1.0,    // Front face: white
-      0.0,  0.0,  0.0,  1.0,    // Back face: red
-      0.0,  1.0,  0.0,  1.0,    // Top face: green
-      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
-      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
-      1.0,  0.0,  1.0,  1.0,     // Left face: purple
-      0.0,  0.0,  0.0,  1.0,    // Front face: white
-      1.0,  0.0,  0.0,  1.0,    // Back face: red
-      0.0,  1.0,  0.0,  1.0,    // Top face: green
-      0.0,  0.0,  1.0,  1.0,    // Bottom face: blue
-      1.0,  1.0,  0.0,  1.0,    // Right face: yellow
-      1.0,  0.0,  1.0,  1.0,     // Left face: purple
-    ]
+    color: []
     };
+
+    for (j=0; j<6; j++) {
+      var c = colors[j];
+
+      for (var i=0; i<4; i++) {
+        arrays['color'] = arrays['color'].concat(c);
+      }
+    }
+
 
 
 
     let vu = this;
     let animate = function() {
-      console.log( vu.xtranslate, vu.ytranslate,vu.ztranslate);
+//      console.log( vu.xtranslate, vu.ytranslate,vu.ztranslate);
 
 //      let mrot = meteo.experiment.projmatrix().multiply( meteo.m4.translation(-3.6, 2,0.70) ).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
-      let mrot = meteo.experiment.projmatrix().multiply(meteo.experiment.rotmatrix( vu.xrotation, vu.yrotation, vu.zrotation )).multiply(
-        meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate)        
-        ).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
-      let mper = meteo.experiment.projmatrix();
-      let mres = mrot.multiply(mper);
-      let lookat = meteo.experiment.lookat();
-      let viewproj = mper.multiply(lookat);
+      let proj = meteo.experiment.projmatrix( exp.glcontext.canvas.clientWidth, exp.glcontext.canvas.clientHeight );//.;
+      let view = meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate);
+      view = view.multiply( meteo.experiment.rotmatrix( vu.xrotation, vu.yrotation, vu.zrotation ) );
+//      view = view.multiply(  );
+//      view = view.multiply( meteo.m4.scaling(0.2,0.2,0.2) );
+//      proj = proj.multiply(view);
+//      let mper = meteo.experiment.projmatrix();
+//      let mres = mrot.multiply(mper);
+//      let lookat = meteo.experiment.lookat();
+//      let viewproj = mper.multiply(lookat);
       let uniforms = {
-        matr: []
+        matr: [],
+        huyatr: []
       };
-      for ( let i = 0; i < 4; ++i ) {
-        for ( let j = 0; j < 4; ++j ) {
-          uniforms.matr.push( mrot.getValueAt( i, j ) );
-//          uniforms.matr.push( viewproj.getValueAt( i, j ) );
-        }
-      }
 
+//    const fieldOfView = 75*Math.PI/180; // in radians
+//    const aspect = exp.glcontext.canvas.clientWidth/exp.glcontext.canvas.clientHeight;
+//    const zNear = 1;
+//    const zFar = 100.0;
+//    let projectionMatrix = mat4.create();
+
+    // note: glmatrix.js always has the first argument
+    // as the destination to receive the result.
+//    mat4.perspective(projectionMatrix,
+//                     fieldOfView,
+//                     aspect,
+//                     zNear,
+//                     zFar);
+
+
+    projectionMatrix = [];
+    for ( let i = 0; i < 4; ++i ) {
+      for ( let j = 0; j < 4; ++j ) {
+        projectionMatrix.push( proj.getValueAt( i, j ) );
+      }
+    }
+
+    // Set the drawing position to the "identity" point, which is
+    // the center of the scene.
+    let modelViewMatrix = [];//mat4.create();
+    for ( let i = 0; i < 4; ++i ) {
+      for ( let j = 0; j < 4; ++j ) {
+        modelViewMatrix.push( view.getValueAt( i, j ) );
+      }
+    }
+
+    // Now move the drawing position a bit to where we want to
+    // start drawing the square.
+
+//    mat4.translate(modelViewMatrix,     // destination matrix
+//                   modelViewMatrix,     // matrix to translate
+//                   [vu.xtranslate, vu.ytranslate, vu.ztranslate]);  // amount to translate
+//    mat4.rotate(modelViewMatrix,  // destination matrix
+//                modelViewMatrix,  // matrix to rotate
+//                vu.zrotation*meteo.basis.DEG2RAD,     // amount to rotate in radians
+//                [0, 0, 1]);       // axis to rotate around (Z)
+//    mat4.rotate(modelViewMatrix,  // destination matrix
+//                modelViewMatrix,  // matrix to rotate
+//                vu.xrotation*meteo.basis.DEG2RAD,// amount to rotate in radians
+//                [1, 0, 0]);       // axis to rotate around (X)
+//    mat4.rotate(modelViewMatrix,  // destination matrix
+//                modelViewMatrix,  // matrix to rotate
+//                vu.yrotation*meteo.basis.DEG2RAD,// amount to rotate in radians
+//                [0, 1, 0]);       // axis to rotate around (X)
+
+      uniforms.matr = projectionMatrix;
+      uniforms.huyatr = modelViewMatrix;
+
+//      for ( let i = 0; i < 4; ++i ) {
+//        for ( let j = 0; j < 4; ++j ) {
+//          uniforms.matr.push( mrot.getValueAt( i, j ) );
+////          uniforms.matr.push( viewproj.getValueAt( i, j ) );
+//        }
+//      }
+
+      exp.glcontext.clearColor( 0.2, 0.2, 0.2, 1 );
+      exp.glcontext.clearDepth(1.0);
       exp.glcontext.enable( exp.glcontext.DEPTH_TEST );
-      exp.glcontext.clearColor( 1, 1, 1, 1 );
-//      exp.glcontext.clearDepth( 1.0 );
+//      exp.glcontext.enable( exp.glcontext.CULL_FACE);
+      exp.glcontext.depthFunc(exp.glcontext.LEQUAL);
       exp.glcontext.clear( exp.glcontext.COLOR_BUFFER_BIT | exp.glcontext.DEPTH_BUFFER_BIT );
+      exp.glcontext.useProgram( exp.programinfo.program );
+//      exp.glcontext.clearDepth( 1.0 );
       const bufferinfo = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[13] );
       const bufferinfo2 = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[9] );
       const bufferinfo3 = twgl.createBufferInfoFromArrays( exp.glcontext, arrays );
 //      twgl.createUniformSetters( exp.glcontext, exp.programinfo.program );
-      exp.glcontext.useProgram( exp.programinfo.program );
-      twgl.setUniforms( exp.programinfo, uniforms );
 //      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo );
 //      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.LINES );
 //      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.LINES );
 
       twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo3 );
+      twgl.setUniforms( exp.programinfo, uniforms );
       twgl.drawBufferInfo( exp.glcontext, bufferinfo3, exp.glcontext.TRIANGLES );
 //      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.TRIANGLES );
 //      twgl.setUniforms( programinfo,  );
@@ -210,7 +265,7 @@ var webgl = new Vue({
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
       this.$nextTick( () => {
-        console.log( this.canvas.width, this.canvas.height, this.canvas.clientWidth, this.canvas.clientHeight );
+//        console.log( this.canvas.width, this.canvas.height, this.canvas.clientWidth, this.canvas.clientHeight );
       });
     }
   },

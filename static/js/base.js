@@ -10,7 +10,7 @@ goog.provide('meteo.m4.scaling');
 goog.provide('meteo.m4.perspective');
 
 meteo.m4.translation = function( tx, ty, tz, opt_m ) {//  1,  0,  0,  0,
-    console.log('trans = ', parseInt(tx,10), parseInt(ty,10),parseInt(tz));
+//    console.log('trans = ', parseInt(tx,10), parseInt(ty,10),parseInt(tz));
     let m = opt_m || new goog.math.Matrix( 4, 4 );    //  0,  1,  0,  0,
     m.setValueAt( 0, 0, 1 );                          //  0,  0,  1,  0,
     m.setValueAt( 1, 1, 1 );                          //  tx, ty, tz, 1,
@@ -72,7 +72,7 @@ meteo.m4.scaling = function( sx, sy, sz, opt_m ) {    //  sx, 0 , 0,  0,
 
 meteo.m4.perspective = function( fov, aspect, near, far, opt_m )
 {
-  let f = Math.tan( Math.PI*0.5 - 0.5*fov );                  // f/aspect, 0,                          0,   0,
+  let f = 1.0/Math.tan( fov*0.5 );                  // f/aspect, 0,                          0,   0,
   let range_inv = 1.0/( near - far );           // 0,       f,                          0,   0,
   let m  = opt_m || new goog.math.Matrix( 4, 4 );   // 0,       0,  (near + far) * rangeInv,    -1,
   m.setValueAt( 0, 0, f/aspect );                // 0,       0,  near * far * rangeInv * 2,   0

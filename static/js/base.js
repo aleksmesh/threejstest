@@ -16,9 +16,9 @@ meteo.m4.translation = function( tx, ty, tz, opt_m ) {//  1,  0,  0,  0,
     m.setValueAt( 1, 1, 1 );                          //  tx, ty, tz, 1,
     m.setValueAt( 2, 2, 1 );
     m.setValueAt( 3, 3, 1 );
-    m.setValueAt( 3, 0,  parseInt(tx,10) );
-    m.setValueAt( 3, 1,  parseInt(ty,10) );
-    m.setValueAt( 3, 2,  parseInt(tz,10) );
+    m.setValueAt( 3, 0,  parseFloat(tx,10) );
+    m.setValueAt( 3, 1,  parseFloat(ty,10) );
+    m.setValueAt( 3, 2,  parseFloat(tz,10) );
     return m;
 };
 

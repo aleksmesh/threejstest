@@ -131,6 +131,64 @@ var webgl = new Vue({
     ],
     color: []
     };
+    let arrays2 = {
+      position: [
+        -2,  0,  0,
+         2,  0,  0,
+         0, -2,  0,
+         0,  2,  0,
+         0,  0, -2,
+         0,  0,  2,
+      ],
+      color: [
+        1,1,0,1,
+        1,1,0,1,
+        1,1,0,1,
+        1,1,0,1,
+        1,1,0,1,
+        1,1,0,1,
+      ]
+    };
+    let arrays3 = {
+      position: [
+      ],
+      color: [
+      ]
+    };
+    let r = 3;
+    for ( let i = 0; i <= 175; i+= 5 ) {
+      let lon0 = i*meteo.basis.DEG2RAD;
+      let lond = (i+5)*meteo.basis.DEG2RAD;
+      let sinlon0 = Math.sin(lon0);
+      let coslon0 = Math.cos(lon0);
+      let sinlond = Math.sin(lond);
+      let coslond = Math.cos(lond);
+      for ( let j = 0; j <= 85; ++j ) {
+        let lat0 = j*meteo.basis.DEG2RAD;
+        let latd = (j+5)*meteo.basis.DEG2RAD;
+        let sinlat0 = Math.sin(lat0);
+        let coslat0 = Math.cos(lat0);
+        let sinlatd = Math.sin(latd);
+        let coslatd = Math.cos(latd);
+        let x = r*coslat0*sinlon0;
+        let y = r*sinlat0;
+        let z = r*coslat0*coslon0;
+        arrays3.position.push(x);
+        arrays3.position.push(y);
+        arrays3.position.push(z);
+        x = r*coslat0*sinlond;
+        z = r*coslat0*coslond;
+        arrays3.position.push(x);
+        arrays3.position.push(y);
+        arrays3.position.push(z);
+        x = r*coslat0*sinlon0;
+        y = r*sinlat0;
+        z = r*coslat0*coslon0;
+        arrays3.position.push(x);
+        arrays3.position.push(y);
+        arrays3.position.push(z);
+      }
+    }
 
     for (j=0; j<6; j++) {
       var c = colors[j];
@@ -149,8 +207,8 @@ var webgl = new Vue({
 
 //      let mrot = meteo.experiment.projmatrix().multiply( meteo.m4.translation(-3.6, 2,0.70) ).multiply(meteo.experiment.rotmatrix()).multiply( meteo.m4.scaling(0.2,0.2,0.2) );
       let proj = meteo.experiment.projmatrix( exp.glcontext.canvas.clientWidth, exp.glcontext.canvas.clientHeight );//.;
-      let view = meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate);
-      view = view.multiply( meteo.experiment.rotmatrix( vu.xrotation, vu.yrotation, vu.zrotation ) );
+      let view = meteo.experiment.rotmatrix( vu.xrotation, vu.yrotation, vu.zrotation );
+      view = view.multiply(  meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate) );
 //      view = view.multiply(  );
 //      view = view.multiply( meteo.m4.scaling(0.2,0.2,0.2) );
 //      proj = proj.multiply(view);
@@ -242,6 +300,12 @@ var webgl = new Vue({
       twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo3 );
       twgl.setUniforms( exp.programinfo, uniforms );
       twgl.drawBufferInfo( exp.glcontext, bufferinfo3, exp.glcontext.TRIANGLES );
+
+      const bufferinfo4 = twgl.createBufferInfoFromArrays( exp.glcontext, arrays2 );
+      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo4 );
+      twgl.setUniforms( exp.programinfo, uniforms );
+      twgl.drawBufferInfo( exp.glcontext, bufferinfo4, exp.glcontext.LINES );
+
 //      twgl.drawBufferInfo( exp.glcontext, bufferinfo, exp.glcontext.TRIANGLES );
 //      twgl.setUniforms( programinfo,  );
 

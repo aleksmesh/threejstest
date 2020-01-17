@@ -60,3 +60,24 @@ body {
   margin: 0;
   padding: 0;
 }
+.fovy {
+  position: fixed;
+  top: 150px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+.near {
+  position: fixed;
+  top: 170px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}
+.fary {
+  position: fixed;
+  top: 190px;
+  left: 30px;
+  margin: 0;
+  padding: 0;
+}

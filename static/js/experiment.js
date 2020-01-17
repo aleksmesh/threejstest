@@ -34,7 +34,7 @@ meteo.experiment.defaultVshader = function()
     uniform mat4 matr;
     uniform mat4 huyatr;
     void main() {
-//        gl_Position = matr*position;
+//        gl_Position = huyatr*position;
         gl_Position = matr*huyatr*position;
 //      gl_Position = position;
       vcolor = color;
@@ -77,10 +77,10 @@ meteo.experiment.rotmatrix = function( rxa, rya, rza )
   return jokmok;
 };
 
-meteo.experiment.projmatrix = function( width, height )
+meteo.experiment.projmatrix = function( fov, width, height, near, far )
 {
 //  let pers = meteo.m4.perspective( Math.PI/3, 1980/1024, 0, 1 );
-  let pers = meteo.m4.perspective( 75*Math.PI/180, width/height, 1, 100 );
+  let pers = meteo.m4.perspective( fov*Math.PI/180, width/height, parseInt(near), parseInt(far) );
   return pers;
 };
 

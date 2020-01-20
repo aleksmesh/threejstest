@@ -29,14 +29,10 @@ meteo.experiment.defaultVshader = function()
   return `
     attribute vec4 position;
     attribute vec4 color;
-//    mat4 matrix = mat4( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
     varying lowp vec4 vcolor;
-    uniform mat4 matr;
-    uniform mat4 huyatr;
+    uniform mat4 mvp;
     void main() {
-//        gl_Position = huyatr*position;
-        gl_Position = matr*huyatr*position;
-//      gl_Position = position;
+      gl_Position = mvp*position;
       vcolor = color;
     }
   `;
@@ -49,7 +45,6 @@ meteo.experiment.defaultFshader = function()
     varying lowp vec4 vcolor;
     void main() {
       gl_FragColor = vcolor;
-//      gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
     }
   `;
 };

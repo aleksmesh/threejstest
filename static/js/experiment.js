@@ -67,7 +67,7 @@ meteo.experiment.rotmatrix = function( rxa, rya, rza )
   let rx = meteo.m4.xrotation( meteo.basis.DEG2RAD*rxa );
   let ry = meteo.m4.yrotation( meteo.basis.DEG2RAD*rya );
   let rz = meteo.m4.zrotation( meteo.basis.DEG2RAD*rza );
-  let okpok  = rx.multiply(ry);
+  let okpok  = ry.multiply(rx);
   let jokmok = okpok.multiply(rz);
   return jokmok;
 };

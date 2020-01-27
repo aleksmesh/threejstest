@@ -18,13 +18,23 @@ var webgl = new Vue({
       fovy: 75,
       near: 1,
       fary: 100,
+      moveactive: false,
+      deltax: 0,
+      deltay: 0
     }
   },
   created() {
     window.addEventListener('resize', this.windowResized )
+    window.addEventListener('mousedown', this.mouseDown )
+    window.addEventListener('mouseup', this.mouseUp )
+    window.addEventListener('mousemove', this.mouseMove )
+    window.addEventListener('mousewheel', this.mouseWheel )
   },
   destroyed() {
     window.removeEventListener('resize', this.windowResized )
+    window.removeEventListener('mousedown', this.mouseDown)
+    window.removeEventListener('mouseup', this.mouseUp)
+    window.removeEventListener('mousewheel', this.mouseWheel)
   },
   watch: {
     xrotation: function(val) {
@@ -186,7 +196,7 @@ var webgl = new Vue({
     let vu = this;
     let animate = function() {
       let model = meteo.experiment.projmatrix( vu.fovy, exp.glcontext.canvas.clientWidth, exp.glcontext.canvas.clientHeight, vu.near, vu.fary );//.;
-      let view = meteo.experiment.rotmatrix( vu.xrotation, vu.yrotation, vu.zrotation );
+      let view = meteo.experiment.rotmatrix( (vu.xrotation + vu.deltax ), ( vu.yrotation + vu.deltay ), vu.zrotation );
       view = view.multiply(  meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate) );
       let res = view.multiply(model);
       let uniforms = {
@@ -232,6 +242,36 @@ var webgl = new Vue({
       }
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
+    },
+    mouseDown: function(e) {
+      console.log('i\'m pressed');
+      this.moveactive = true;
+    },
+    mouseUp: function(e) {
+      console.log('i\'m released!');
+      this.moveactive = false;
+//      this.xrotation += this.deltax;
+//      this.yrotation += this.deltay;
+//      this.deltax = 0;
+//      this.deltay = 0;
+    },
+    mouseMove: function(e) {
+      if ( false === this.moveactive ) {
+        return;
+      }
+      this.xrotation += e.movementY;
+      this.yrotation += e.movementX;
+      if ( 45 < this.xrotation ) {
+        this.xrotation = 45;
+      }
+      if ( -45 > this.xrotation ) {
+        this.xrotation = -45;
+      }
+//      console.log('i\'m moved!', this.deltax, this.deltay, e.movementX, e.movementY );
+    },
+    mouseWheel: function(e) {
+      this.fovy += Math.sign( e.deltaY )*1.8;
+      console.log( e.deltaY );
     }
   },
 }

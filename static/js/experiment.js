@@ -81,13 +81,9 @@ meteo.experiment.projmatrix = function( fov, width, height, near, far )
 
 meteo.experiment.lookat = function()
 {
-  let pos  = [ 1, 0, 0 ];
-  let cam = meteo.m4.xrotation( meteo.basis.DEG2RAD*90 );
-  cam = cam.multiply( meteo.m4.scaling( 0.2, 0.2, 0.2 ) );
-  cam = cam.multiply( meteo.m4.translation( 0, 0, 0 ) );
-  let campos = [ cam.getValueAt( 3, 0 ), cam.getValueAt( 3, 1 ), cam.getValueAt( 3, 2 ) ];
-  let up = [ 0, 1, 0 ];
-  let look = meteo.m4.lookAt( campos, [ 0, 0, 1 ], up );
+  let cam = [ 0, 0, meteo.basis.EARTH_RADIUS*4.0 ];
+  let up = [ 0, meteo.basis.EARTH_RADIUS*4.0, 0 ];
+  let look = meteo.m4.lookAt( cam, [ 0, 0, 0 ], up );
   let viewm = look.getInverse();
   return viewm;
 };

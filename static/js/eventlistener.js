@@ -17,7 +17,7 @@ var webgl = new Vue({
       ztranslate: -6,
       fovy: 75,
       near: 1,
-      fary: 100,
+      fary: meteo.basis.EARTH_RADIUS*4,
       moveactive: false,
       deltax: 0,
       deltay: 0
@@ -69,54 +69,54 @@ var webgl = new Vue({
     ];
 
 
-    let arrays = {
-      position: [
-        // Front face
-        -1.0, -1.0,  1.0,
-         1.0, -1.0,  1.0,
-         1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
-
-        // Back face
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0, -1.0,
-         1.0,  1.0, -1.0,
-         1.0, -1.0, -1.0,
-
-        // Top face
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-         1.0,  1.0,  1.0,
-         1.0,  1.0, -1.0,
-
-        // Bottom face
-        -1.0, -1.0, -1.0,
-         1.0, -1.0, -1.0,
-         1.0, -1.0,  1.0,
-        -1.0, -1.0,  1.0,
-
-        // Right face
-         1.0, -1.0, -1.0,
-         1.0,  1.0, -1.0,
-         1.0,  1.0,  1.0,
-         1.0, -1.0,  1.0,
-
-        // Left face
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0,  1.0,
-        -1.0,  1.0,  1.0,
-        -1.0,  1.0, -1.0,
-    ],
-    indices:[
-      0,  1,  2,      0,  2,  3,    // front
-      4,  5,  6,      4,  6,  7,    // back
-      8,  9,  10,     8,  10, 11,   // top
-      12, 13, 14,     12, 14, 15,   // bottom
-      16, 17, 18,     16, 18, 19,   // right
-      20, 21, 22,     20, 22, 23    // left
-    ],
-    color: []
-    };
+//    let arrays = {
+//      position: [
+//        // Front face
+//        -1.0, -1.0,  1.0,
+//         1.0, -1.0,  1.0,
+//         1.0,  1.0,  1.0,
+//        -1.0,  1.0,  1.0,
+//
+//        // Back face
+//        -1.0, -1.0, -1.0,
+//        -1.0,  1.0, -1.0,
+//         1.0,  1.0, -1.0,
+//         1.0, -1.0, -1.0,
+//
+//        // Top face
+//        -1.0,  1.0, -1.0,
+//        -1.0,  1.0,  1.0,
+//         1.0,  1.0,  1.0,
+//         1.0,  1.0, -1.0,
+//
+//        // Bottom face
+//        -1.0, -1.0, -1.0,
+//         1.0, -1.0, -1.0,
+//         1.0, -1.0,  1.0,
+//        -1.0, -1.0,  1.0,
+//
+//        // Right face
+//         1.0, -1.0, -1.0,
+//         1.0,  1.0, -1.0,
+//         1.0,  1.0,  1.0,
+//         1.0, -1.0,  1.0,
+//
+//        // Left face
+//        -1.0, -1.0, -1.0,
+//        -1.0, -1.0,  1.0,
+//        -1.0,  1.0,  1.0,
+//        -1.0,  1.0, -1.0,
+//    ],
+//    indices:[
+//      0,  1,  2,      0,  2,  3,    // front
+//      4,  5,  6,      4,  6,  7,    // back
+//      8,  9,  10,     8,  10, 11,   // top
+//      12, 13, 14,     12, 14, 15,   // bottom
+//      16, 17, 18,     16, 18, 19,   // right
+//      20, 21, 22,     20, 22, 23    // left
+//    ],
+//    color: []
+//    };
     let arrays2 = {
       position: [
         -2,  0,  0,
@@ -141,7 +141,7 @@ var webgl = new Vue({
       color: [
       ]
     };
-    let r = 3;
+    let r = meteo.basis.EARTH_RADIUS;
     for ( let i = 0; i <= 355; i+= 10 ) {
       let lon0 = i*meteo.basis.DEG2RAD;
       let lond = (i+10)*meteo.basis.DEG2RAD;
@@ -185,19 +185,21 @@ var webgl = new Vue({
       }
     }
 
-    for (j=0; j<6; j++) {
-      var c = colors[j];
-
-      for (var i=0; i<4; i++) {
-        arrays['color'] = arrays['color'].concat(c);
-      }
-    }
+//    for (j=0; j<6; j++) {
+//      var c = colors[j];
+//
+//      for (var i=0; i<4; i++) {
+//        arrays['color'] = arrays['color'].concat(c);
+//      }
+//    }
 
     let vu = this;
     let animate = function() {
       let model = meteo.experiment.projmatrix( vu.fovy, exp.glcontext.canvas.clientWidth, exp.glcontext.canvas.clientHeight, vu.near, vu.fary );//.;
-      let view = meteo.experiment.rotmatrix( (vu.xrotation + vu.deltax ), ( vu.yrotation + vu.deltay ), vu.zrotation );
-      view = view.multiply(  meteo.m4.translation( vu.xtranslate, vu.ytranslate,vu.ztranslate) );
+      let view = meteo.experiment.lookat();
+//      let view = meteo.experiment.rotmatrix( (vu.xrotation + vu.deltax ), ( vu.yrotation + vu.deltay ), vu.zrotation );
+//      view = view.multiply( meteo.m4.translation( vu.xtranslate, vu.ytranslate, vu.ztranslate ) );
+//      let res = model.multiply(view);
       let res = view.multiply(model);
       let uniforms = {
         mvp: [],
@@ -212,7 +214,7 @@ var webgl = new Vue({
       exp.glcontext.clearColor( 0.2, 0.2, 0.2, 1 );
       exp.glcontext.clearDepth(1.0);
       exp.glcontext.enable( exp.glcontext.DEPTH_TEST );
-      exp.glcontext.enable( exp.glcontext.CULL_FACE);
+//      exp.glcontext.enable( exp.glcontext.CULL_FACE);
       exp.glcontext.depthFunc(exp.glcontext.LEQUAL);
 //      exp.glcontext.depthFunc(exp.glcontext.NOTEQUAL);
       exp.glcontext.clear( exp.glcontext.COLOR_BUFFER_BIT | exp.glcontext.DEPTH_BUFFER_BIT );
@@ -220,11 +222,11 @@ var webgl = new Vue({
 
       const bufferinfo = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[13] );
       const bufferinfo2 = twgl.createBufferInfoFromArrays( exp.glcontext, lot_of_arrays[9] );
-      const bufferinfo3 = twgl.createBufferInfoFromArrays( exp.glcontext, arrays );
+//      const bufferinfo3 = twgl.createBufferInfoFromArrays( exp.glcontext, arrays );
 
-      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo3 );
-      twgl.setUniforms( exp.programinfo, uniforms );
-      twgl.drawBufferInfo( exp.glcontext, bufferinfo3, exp.glcontext.TRIANGLES );
+//      twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo3 );
+//      twgl.setUniforms( exp.programinfo, uniforms );
+//      twgl.drawBufferInfo( exp.glcontext, bufferinfo3, exp.glcontext.TRIANGLES );
 
       const bufferinfo4 = twgl.createBufferInfoFromArrays( exp.glcontext, arrays3 );
       twgl.setBuffersAndAttributes( exp.glcontext, exp.programinfo, bufferinfo4 );

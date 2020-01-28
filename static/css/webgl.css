@@ -17,14 +17,14 @@ body {
   padding: 0;
 }
 
-.xrotation {
+.lon {
   position: fixed;
   top: 30px;
   left: 30px;
   margin: 0;
   padding: 0;
 }
-.yrotation {
+.distance {
   position: fixed;
   top: 50px;
   left: 30px;

@@ -16,12 +16,65 @@ meteo.experiment = function( canvas )
   console.log( 'atribs =', this.glcontext.getContextAttributes() );
   this.programinfo = null;
   this.latitudes = null;
-  this.latarrays = [];
+  this.arrays = meteo.experiment.initTestSphere();
 };
 
 meteo.experiment.prototype.createProgramInfo = function( vshader, fshader )
 {
   this.programinfo = twgl.createProgramInfo( this.glcontext, [ vshader, fshader ], );
+};
+
+meteo.experiment.initTestSphere = function() {
+  let arrays3 = {
+    position: [
+    ],
+    color: [
+    ]
+  };
+  let r = meteo.basis.EARTH_RADIUS;
+  for ( let i = 0; i <= 355; i+= 10 ) {
+    let lon0 = i*meteo.basis.DEG2RAD;
+    let lond = (i+10)*meteo.basis.DEG2RAD;
+    let sinlon0 = Math.sin(lon0);
+    let coslon0 = Math.cos(lon0);
+    let sinlond = Math.sin(lond);
+    let coslond = Math.cos(lond);
+    for ( let j = 0; j <= 85; j+=5 ) {
+      let lat0 = j*meteo.basis.DEG2RAD;
+      let latd = (j+5)*meteo.basis.DEG2RAD;
+      let sinlat0 = Math.sin(lat0);
+      let coslat0 = Math.cos(lat0);
+      let sinlatd = Math.sin(latd);
+      let coslatd = Math.cos(latd);
+      let x = r*coslat0*sinlon0;
+      let y = r*sinlat0;
+      let z = r*coslat0*coslon0;
+      arrays3.position.push(x);
+      arrays3.position.push(y);
+      arrays3.position.push(z);
+      x = r*coslat0*sinlond;
+      z = r*coslat0*coslond;
+      arrays3.position.push(x);
+      arrays3.position.push(y);
+      arrays3.position.push(z);
+      x = r*coslatd*sinlon0;
+      y = r*sinlatd;
+      z = r*coslatd*coslon0;
+      arrays3.position.push(x);
+      arrays3.position.push(y);
+      arrays3.position.push(z);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+      arrays3.color.push(lat0/(Math.PI/2),lon0/(Math.PI*2),0,1);
+    }
+  }
+  return arrays3;
 };
 
 meteo.experiment.defaultVshader = function()
@@ -79,10 +132,12 @@ meteo.experiment.projmatrix = function( fov, width, height, near, far )
   return pers;
 };
 
-meteo.experiment.lookat = function()
+meteo.experiment.lookat = function( lat, lon, dist )
 {
-  let cam = [ 0, 0, meteo.basis.EARTH_RADIUS*4.0 ];
-  let up = [ 0, meteo.basis.EARTH_RADIUS*4.0, 0 ];
+  let lonrad = meteo.basis.DEG2RAD*lon;
+  let latrad =  meteo.basis.DEG2RAD*lat;
+  let cam = [ dist*Math.sin( lonrad )*Math.cos(latrad), dist*Math.sin(latrad), dist*Math.cos(lonrad)*Math.cos(latrad) ];
+  let up = [ 0, dist*Math.cos(latrad), -dist*Math.sin(latrad) ];
   let look = meteo.m4.lookAt( cam, [ 0, 0, 0 ], up );
   let viewm = look.getInverse();
   return viewm;
